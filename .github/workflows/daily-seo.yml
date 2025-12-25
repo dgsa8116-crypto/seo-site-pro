@@ -1,0 +1,33 @@
+﻿name: Daily SEO Auto-Update
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-keywords:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Fetch Trends & Update JSON
+        run: node scripts/generate-meta.mjs
+
+      - name: Commit & Push Changes
+        run: |
+          git config --global user.name 'SEO Bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git add data/seo.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(seo): update daily trends keywords" && git push)

@@ -1,0 +1,54 @@
+{
+  "brand": "天眼通III不正常人類研究中心",
+  "hero": {
+    "title": "前往註冊BEC",
+    "subtitle": "先有註冊才有後續，開啟你的 AI 預測之旅。",
+    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop",
+    "cta": { "label": "立即註冊", "href": "https://becgame88168.com/?uffr=dgsa001" }
+  },
+  "services": {
+    "title": "其餘服務業務",
+    "items": [
+      {
+        "title": "智能客服中心",
+        "description": "最溫馨的客服服務，減少不必要的損失。",
+        "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800",
+        "link": "https://line.me/R/ti/p/@bec168",
+        "badge": "LINE"
+      },
+      {
+        "title": "LINEBOT預測程式",
+        "description": "AI學習模組最豐富的排組組合。",
+        "image": "https://images.unsplash.com/photo-1552581234-26160f608093?w=800",
+        "link": "https://line.me/R/ti/p/@564lzkqd"
+      },
+      {
+        "title": "天眼通申請序號",
+        "description": "跨渠道整合，決策效率大幅提升。",
+        "image": "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800",
+        "link": "https://line.me/R/ti/p/@622bugzl",
+        "badge": "DEMO"
+      }
+    ]
+  },
+  "portfolio": {
+    "title": "核心推薦",
+    "items": [
+      {
+        "title": "極簡介面 優質服務",
+        "description": "往後餘生請交給我們。",
+        "image": "https://images.unsplash.com/photo-1492724441997-5dc865305da7?w=800"
+      },
+      {
+        "title": "優質學習服務",
+        "description": "技術 SEO、語意內容、A/B 實驗。",
+        "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800"
+      },
+      {
+        "title": "產品設計開發",
+        "description": "從雛型到上線，高品質前端。",
+        "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800"
+      }
+    ]
+  }
+}

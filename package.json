@@ -1,0 +1,23 @@
+{
+  "name": "seo-site-pro",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postbuild": "next-sitemap",
+    "start": "next start",
+    "seo:refresh": "node scripts/generate-meta.mjs",
+    "img:compress": "node scripts/compress-images.mjs"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "node-fetch": "^3.3.2",
+    "sharp": "^0.32.6"
+  },
+  "devDependencies": {
+    "next-sitemap": "^4.2.3"
+  }
+}
