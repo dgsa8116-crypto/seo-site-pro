@@ -14,6 +14,7 @@ export default function SEO({ meta }) {
   return (
     <Head>
       <title>{title}</title>
+      <meta name="google-site-verification" content="rAVGA4wUDHCgqIShWsavnnp7dwq1hFxGgWsjqz8AG_Y" />
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords.join(", ")} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
