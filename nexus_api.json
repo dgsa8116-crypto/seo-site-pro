@@ -1,18 +1,37 @@
 {
-    "update_time": "2026-03-30 03:52:09",
+    "update_time": "2026-03-30 07:20:56",
     "sports": [
         {
-            "id": 1774842727,
+            "id": 1774855254,
+            "category": "esports",
+            "league": "電競 LoL",
+            "date": "tomorrow",
+            "time": "18:00",
+            "teamA": "隊伍A_41",
+            "teamB": "隊伍B_33",
+            "cost": 30,
+            "prediction": {
+                "winProbA": 62,
+                "winProbB": 38,
+                "recommend": "系統推薦下注",
+                "analysis": "動態爬取分析數據載入完成。",
+                "analyst": "Nexus AI",
+                "confidence": "🔥🔥🔥🔥"
+            },
+            "color": "var(--glow-3)"
+        },
+        {
+            "id": 1774855255,
             "category": "baseball",
             "league": "MLB 棒球",
-            "date": "today",
-            "time": "17:00",
-            "teamA": "隊伍A_35",
-            "teamB": "隊伍B_68",
+            "date": "tomorrow",
+            "time": "21:00",
+            "teamA": "隊伍A_48",
+            "teamB": "隊伍B_82",
             "cost": 50,
             "prediction": {
-                "winProbA": 55,
-                "winProbB": 45,
+                "winProbA": 38,
+                "winProbB": 62,
                 "recommend": "系統推薦下注",
                 "analysis": "動態爬取分析數據載入完成。",
                 "analyst": "Nexus AI",
@@ -21,55 +40,36 @@
             "color": "var(--glow-2)"
         },
         {
-            "id": 1774842728,
-            "category": "tennis",
-            "league": "網球 巡迴賽",
-            "date": "today",
-            "time": "22:30",
-            "teamA": "隊伍A_36",
-            "teamB": "隊伍B_25",
-            "cost": 50,
-            "prediction": {
-                "winProbA": 70,
-                "winProbB": 30,
-                "recommend": "系統推薦下注",
-                "analysis": "動態爬取分析數據載入完成。",
-                "analyst": "Nexus AI",
-                "confidence": "🔥🔥🔥🔥"
-            },
-            "color": "#00ffaa"
-        },
-        {
-            "id": 1774842729,
-            "category": "tennis",
-            "league": "網球 巡迴賽",
-            "date": "today",
-            "time": "23:00",
-            "teamA": "隊伍A_2",
-            "teamB": "隊伍B_66",
+            "id": 1774855256,
+            "category": "esports",
+            "league": "電競 LoL",
+            "date": "tomorrow",
+            "time": "12:00",
+            "teamA": "隊伍A_42",
+            "teamB": "隊伍B_83",
             "cost": 30,
             "prediction": {
-                "winProbA": 66,
-                "winProbB": 34,
+                "winProbA": 37,
+                "winProbB": 63,
                 "recommend": "系統推薦下注",
                 "analysis": "動態爬取分析數據載入完成。",
                 "analyst": "Nexus AI",
                 "confidence": "🔥🔥🔥🔥"
             },
-            "color": "#00ffaa"
+            "color": "var(--glow-3)"
         },
         {
-            "id": 1774842730,
+            "id": 1774855257,
             "category": "basketball",
             "league": "NBA 籃球",
-            "date": "today",
-            "time": "20:15",
-            "teamA": "隊伍A_76",
-            "teamB": "隊伍B_8",
-            "cost": 80,
+            "date": "tomorrow",
+            "time": "19:30",
+            "teamA": "隊伍A_52",
+            "teamB": "隊伍B_74",
+            "cost": 30,
             "prediction": {
-                "winProbA": 69,
-                "winProbB": 31,
+                "winProbA": 54,
+                "winProbB": 46,
                 "recommend": "系統推薦下注",
                 "analysis": "動態爬取分析數據載入完成。",
                 "analyst": "Nexus AI",
@@ -78,14 +78,52 @@
             "color": "var(--glow-4)"
         },
         {
-            "id": 1774842731,
-            "category": "basketball",
-            "league": "NBA 籃球",
+            "id": 1774855258,
+            "category": "soccer",
+            "league": "足球 五大聯賽",
             "date": "tomorrow",
-            "time": "18:00",
-            "teamA": "隊伍A_35",
-            "teamB": "隊伍B_73",
-            "cost": 30,
+            "time": "09:30",
+            "teamA": "隊伍A_63",
+            "teamB": "隊伍B_5",
+            "cost": 50,
+            "prediction": {
+                "winProbA": 68,
+                "winProbB": 32,
+                "recommend": "系統推薦下注",
+                "analysis": "動態爬取分析數據載入完成。",
+                "analyst": "Nexus AI",
+                "confidence": "🔥🔥🔥🔥"
+            },
+            "color": "var(--glow-1)"
+        },
+        {
+            "id": 1774855259,
+            "category": "baseball",
+            "league": "MLB 棒球",
+            "date": "today",
+            "time": "12:15",
+            "teamA": "隊伍A_61",
+            "teamB": "隊伍B_17",
+            "cost": 80,
+            "prediction": {
+                "winProbA": 67,
+                "winProbB": 33,
+                "recommend": "系統推薦下注",
+                "analysis": "動態爬取分析數據載入完成。",
+                "analyst": "Nexus AI",
+                "confidence": "🔥🔥🔥🔥"
+            },
+            "color": "var(--glow-2)"
+        },
+        {
+            "id": 1774855260,
+            "category": "tennis",
+            "league": "網球 巡迴賽",
+            "date": "tomorrow",
+            "time": "13:15",
+            "teamA": "隊伍A_11",
+            "teamB": "隊伍B_98",
+            "cost": 50,
             "prediction": {
                 "winProbA": 40,
                 "winProbB": 60,
@@ -94,17 +132,17 @@
                 "analyst": "Nexus AI",
                 "confidence": "🔥🔥🔥🔥"
             },
-            "color": "var(--glow-4)"
+            "color": "#00ffaa"
         },
         {
-            "id": 1774842732,
-            "category": "tennis",
-            "league": "網球 巡迴賽",
+            "id": 1774855261,
+            "category": "soccer",
+            "league": "足球 五大聯賽",
             "date": "today",
-            "time": "09:15",
-            "teamA": "隊伍A_64",
-            "teamB": "隊伍B_43",
-            "cost": 80,
+            "time": "15:15",
+            "teamA": "隊伍A_28",
+            "teamB": "隊伍B_57",
+            "cost": 30,
             "prediction": {
                 "winProbA": 33,
                 "winProbB": 67,
@@ -113,54 +151,16 @@
                 "analyst": "Nexus AI",
                 "confidence": "🔥🔥🔥🔥"
             },
-            "color": "#00ffaa"
+            "color": "var(--glow-1)"
         },
         {
-            "id": 1774842733,
-            "category": "baseball",
-            "league": "MLB 棒球",
-            "date": "today",
-            "time": "16:15",
-            "teamA": "隊伍A_50",
-            "teamB": "隊伍B_84",
-            "cost": 30,
-            "prediction": {
-                "winProbA": 60,
-                "winProbB": 40,
-                "recommend": "系統推薦下注",
-                "analysis": "動態爬取分析數據載入完成。",
-                "analyst": "Nexus AI",
-                "confidence": "🔥🔥🔥🔥"
-            },
-            "color": "var(--glow-2)"
-        },
-        {
-            "id": 1774842734,
-            "category": "baseball",
-            "league": "MLB 棒球",
-            "date": "today",
-            "time": "22:00",
-            "teamA": "隊伍A_15",
-            "teamB": "隊伍B_25",
-            "cost": 50,
-            "prediction": {
-                "winProbA": 60,
-                "winProbB": 40,
-                "recommend": "系統推薦下注",
-                "analysis": "動態爬取分析數據載入完成。",
-                "analyst": "Nexus AI",
-                "confidence": "🔥🔥🔥🔥"
-            },
-            "color": "var(--glow-2)"
-        },
-        {
-            "id": 1774842735,
-            "category": "tennis",
-            "league": "網球 巡迴賽",
+            "id": 1774855262,
+            "category": "soccer",
+            "league": "足球 五大聯賽",
             "date": "tomorrow",
-            "time": "15:00",
-            "teamA": "隊伍A_4",
-            "teamB": "隊伍B_67",
+            "time": "21:30",
+            "teamA": "隊伍A_15",
+            "teamB": "隊伍B_91",
             "cost": 80,
             "prediction": {
                 "winProbA": 30,
@@ -170,26 +170,26 @@
                 "analyst": "Nexus AI",
                 "confidence": "🔥🔥🔥🔥"
             },
-            "color": "#00ffaa"
+            "color": "var(--glow-1)"
         },
         {
-            "id": 1774842736,
-            "category": "soccer",
-            "league": "足球 五大聯賽",
-            "date": "today",
-            "time": "13:30",
-            "teamA": "隊伍A_50",
-            "teamB": "隊伍B_76",
+            "id": 1774855263,
+            "category": "esports",
+            "league": "電競 LoL",
+            "date": "tomorrow",
+            "time": "14:30",
+            "teamA": "隊伍A_11",
+            "teamB": "隊伍B_51",
             "cost": 30,
             "prediction": {
-                "winProbA": 50,
-                "winProbB": 50,
+                "winProbA": 62,
+                "winProbB": 38,
                 "recommend": "系統推薦下注",
                 "analysis": "動態爬取分析數據載入完成。",
                 "analyst": "Nexus AI",
                 "confidence": "🔥🔥🔥🔥"
             },
-            "color": "var(--glow-1)"
+            "color": "var(--glow-3)"
         }
     ],
     "lotto539_today": []
