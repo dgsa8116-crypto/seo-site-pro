@@ -58,7 +58,7 @@
             "url": "https://dgsa8116-crypto.github.io/seo-site-pro/"
         },
         "datePublished": "2026-01-01",
-        "dateModified": "2026-03-30"
+        "dateModified": "2026-03-29"
     }
     </script>
     
@@ -424,9 +424,8 @@
     <ul class="nav-links" id="nav-links-container"></ul>
     <div class="sidebar-bottom">
         <!-- 雲端同步狀態列 -->
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:.4rem .5rem;margin-bottom:.5rem;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:center;padding:.4rem .5rem;margin-bottom:.5rem;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--border)">
             <span id="gist-sync-status" style="font-size:.65rem;color:var(--muted);font-family:'Orbitron',monospace;letter-spacing:1px">💾 本機模式</span>
-            <button onclick="window.openGistSetup()" style="font-size:.62rem;background:none;border:1px solid rgba(0,229,255,.15);color:var(--g2);cursor:pointer;padding:2px 7px;border-radius:5px;font-family:'Orbitron',monospace;letter-spacing:1px" title="雲端同步設定">⚙ 雲端</button>
         </div>
         <button id="btn-admin-console" class="btn btn-sm" style="display:none;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:var(--g4);width:100%;margin-bottom:.75rem;font-family:'Orbitron',monospace;font-size:.7rem;letter-spacing:2px" onclick="window.openAdminModal()">ADMIN PANEL</button>
         <div class="user-actions" id="guest-actions">
@@ -705,35 +704,6 @@
     <div class="sys-msg" id="upgrade-msg"></div>
 </div></div></div>
 
-<div class="modal-overlay" id="gist-setup-modal"><div class="modal-wrap"><div class="modal-box custom-scroll">
-    <button class="modal-close" onclick="window.closeModal('gist-setup-modal')">×</button>
-    <h3 class="modal-title">☁ 雲端同步設定</h3>
-    <p style="color:var(--muted);font-size:.82rem;margin-bottom:1.25rem;line-height:1.6">資料將同步至您的 <strong style="color:var(--g2)">GitHub Gist（私有）</strong>，跨裝置永久保留。<br>所需：GitHub 帳號 + Personal Access Token（gist 權限）</p>
-
-    <div style="background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.12);border-radius:10px;padding:1rem;margin-bottom:1.25rem;font-size:.8rem;line-height:1.8;color:var(--muted)">
-        <span style="color:var(--g2);font-weight:700;display:block;margin-bottom:.4rem">📋 申請步驟</span>
-        1. 前往 <a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--g2)">github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</a><br>
-        2. Generate new token → 勾選 <strong style="color:var(--g4)">gist</strong> 權限<br>
-        3. 複製 token 貼入下方（只顯示一次）<br>
-        4. 點「初始化 / 連線」，系統自動建立私有 Gist
-    </div>
-
-    <div class="form-group">
-        <label>GitHub Personal Access Token</label>
-        <input type="password" id="gist-token-input" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
-    </div>
-    <div class="form-group">
-        <label>Gist ID <span style="color:var(--muted);font-size:.75rem">（首次留空→自動建立；之後自動填入）</span></label>
-        <input type="text" id="gist-id-input" class="form-control" placeholder="自動填入或貼上現有 Gist ID">
-    </div>
-    <div style="display:flex;gap:.75rem;margin-top:1rem">
-        <button class="btn btn-glow btn-sm" style="flex:1" onclick="window.saveGistConfig()">☁ 初始化 / 連線</button>
-        <button class="btn btn-sm btn-danger" style="flex:0 0 auto;width:auto;padding:.6rem 1rem" onclick="window.disconnectGist()">斷開連線</button>
-    </div>
-    <div class="sys-msg" id="gist-setup-msg"></div>
-    <div id="gist-setup-status-detail" style="display:none;margin-top:1rem;font-size:.75rem;background:rgba(0,0,0,.4);border-radius:8px;padding:.75rem;color:var(--muted);line-height:1.6"></div>
-</div></div></div>
-
 <!-- 初始載入遮罩 -->
 <div id="gist-loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(7,8,16,.92);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:1rem">
     <div style="width:40px;height:40px;border:3px solid rgba(0,229,255,.2);border-top-color:var(--g2);border-radius:50%;animation:spin 1s linear infinite"></div>
@@ -753,165 +723,157 @@
 
 <script>
 // ============================================================
+// ★ 管理員設定區 — 只需填這兩行，使用者看不到此設定
+// ============================================================
+const NEXUS_GIST_TOKEN = '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';   // GitHub PAT (gist scope)
+const NEXUS_GIST_ID    = '';                        // 首次留空→自動建立並列印到 console
+// ============================================================
+
+// ============================================================
 // GIST SYNC MODULE  — 雲端持久化引擎
 // ============================================================
 (function(){
     const GIST_FILE = 'nexus_data.json';
     const TRACKED   = ['nexusDB','nexusGroups','nexusSections','nexusTasks','nexusRewards',
                        'nexusSportsData','nexus539','nexusTitleGroups','nexusRegLog','nexusGifts'];
-    const CFG_KEYS  = ['nexusGistToken','nexusGistId']; // 不同步到 Gist 本身
 
-    // ── helpers ──
-    function getCfg(){ return {token:localStorage.getItem('nexusGistToken')||'', gistId:localStorage.getItem('nexusGistId')||''}; }
-    function isConfigured(){ const c=getCfg(); return !!(c.token&&c.gistId); }
+    // 執行期 gistId（首次建立後快取在此，不存入 localStorage）
+    let _runtimeGistId = NEXUS_GIST_ID || '';
+    const token = NEXUS_GIST_TOKEN;
+
+    function isConfigured(){ return !!(token && token !== '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' && _runtimeGistId); }
+    function isTokenSet()   { return !!(token && token !== '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'); }
 
     function setSyncStatus(state){
         const el=document.getElementById('gist-sync-status'); if(!el)return;
-        const MAP={synced:{t:'☁ 已同步',c:'var(--g5)'},pending:{t:'⏳ 同步中',c:'var(--g4)'},error:{t:'⚠ 同步失敗',c:'var(--g1)'},offline:{t:'💾 本機模式',c:'var(--muted)'},pulling:{t:'↓ 拉取中',c:'var(--g2)'}};
+        const MAP={
+            synced: {t:'☁ 已同步',  c:'var(--g5)'},
+            pending:{t:'⏳ 同步中', c:'var(--g4)'},
+            error:  {t:'⚠ 同步失敗',c:'var(--g1)'},
+            offline:{t:'💾 本機模式',c:'var(--muted)'},
+            pulling:{t:'↓ 雲端載入', c:'var(--g2)'}
+        };
         const s=MAP[state]||MAP.offline; el.innerText=s.t; el.style.color=s.c;
     }
 
+    // ── 內部寫入（繞過攔截器，避免無限觸發 push）
+    const _origSet = localStorage.setItem.bind(localStorage);
+    function _raw(k,v){ _origSet(k,v); }
+
     // ── pull: Gist → localStorage ──
     async function pull(){
-        const {token,gistId}=getCfg(); if(!token||!gistId) return false;
+        if(!isConfigured()) return false;
         setSyncStatus('pulling');
         try{
-            const res=await fetch(`https://api.github.com/gists/${gistId}`,{headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}});
-            if(!res.ok){setSyncStatus('error');return false;}
-            const d=await res.json();
-            const raw=d.files[GIST_FILE]?.content; if(!raw){setSyncStatus('error');return false;}
-            const store=JSON.parse(raw);
-            // 用 _raw 寫入，繞過我們的攔截器（避免觸發 push）
-            TRACKED.forEach(k=>{if(store[k]!==undefined)_raw(k,typeof store[k]==='string'?store[k]:JSON.stringify(store[k]));});
+            const res = await fetch(`https://api.github.com/gists/${_runtimeGistId}`,{
+                headers:{'Authorization':`token ${token}`,'Accept':'application/vnd.github.v3+json'}
+            });
+            if(!res.ok){ setSyncStatus('error'); return false; }
+            const d   = await res.json();
+            const raw = d.files[GIST_FILE]?.content;
+            if(!raw){ setSyncStatus('error'); return false; }
+            const store = JSON.parse(raw);
+            TRACKED.forEach(k=>{
+                if(store[k]!==undefined)
+                    _raw(k, typeof store[k]==='string' ? store[k] : JSON.stringify(store[k]));
+            });
             setSyncStatus('synced'); return true;
-        }catch(e){console.error('[Gist Pull]',e);setSyncStatus('error');return false;}
+        }catch(e){ console.error('[Gist Pull]',e); setSyncStatus('error'); return false; }
     }
 
     // ── push: localStorage → Gist ──
     async function push(){
-        const {token,gistId}=getCfg(); if(!token||!gistId){setSyncStatus('offline');return false;}
+        if(!isConfigured()){ setSyncStatus('offline'); return false; }
         try{
             const store={};
-            TRACKED.forEach(k=>{const v=localStorage.getItem(k);if(v)try{store[k]=JSON.parse(v);}catch{store[k]=v;}});
-            const res=await fetch(`https://api.github.com/gists/${gistId}`,{
+            TRACKED.forEach(k=>{
+                const v=localStorage.getItem(k);
+                if(v) try{ store[k]=JSON.parse(v); }catch{ store[k]=v; }
+            });
+            const res = await fetch(`https://api.github.com/gists/${_runtimeGistId}`,{
                 method:'PATCH',
                 headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
-                body:JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(store,null,2)}}})
+                body: JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(store,null,2)}}})
             });
             const ok=res.ok; setSyncStatus(ok?'synced':'error'); return ok;
-        }catch(e){console.error('[Gist Push]',e);setSyncStatus('error');return false;}
+        }catch(e){ console.error('[Gist Push]',e); setSyncStatus('error'); return false; }
     }
 
-    // ── create: 新建 private Gist ──
-    async function createGist(token){
+    // ── 首次執行：自動建立私有 Gist ──
+    async function autoCreateGist(){
+        if(!isTokenSet()) return;
+        console.info('[NexusGist] NEXUS_GIST_ID 為空，嘗試自動建立 Gist...');
         const store={};
         TRACKED.forEach(k=>{const v=localStorage.getItem(k);if(v)try{store[k]=JSON.parse(v);}catch{store[k]=v;}});
-        const res=await fetch('https://api.github.com/gists',{
-            method:'POST',
-            headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
-            body:JSON.stringify({description:'NexusCloud Database (自動建立，請勿刪除)',public:false,files:{[GIST_FILE]:{content:JSON.stringify(store,null,2)}}})
-        });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        const d=await res.json(); return d.id;
+        try{
+            const res = await fetch('https://api.github.com/gists',{
+                method:'POST',
+                headers:{'Authorization':`token ${token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},
+                body: JSON.stringify({
+                    description:'NexusCloud Database (自動建立，請勿刪除)',
+                    public: false,
+                    files:{[GIST_FILE]:{content:JSON.stringify(store,null,2)}}
+                })
+            });
+            if(!res.ok) throw new Error(`HTTP ${res.status}`);
+            const d = await res.json();
+            _runtimeGistId = d.id;
+            console.warn(
+                `%c[NexusGist] ✅ Gist 建立成功！請把以下 ID 填回 NEXUS_GIST_ID：\n%c${_runtimeGistId}`,
+                'color:#10b981;font-weight:bold;font-size:13px',
+                'color:#00e5ff;font-size:15px;font-weight:bold'
+            );
+            setSyncStatus('synced');
+        }catch(e){ console.error('[Gist Create]',e); setSyncStatus('error'); }
     }
 
     // ── debounced push scheduler ──
     let _timer=null;
     function schedulePush(){
-        if(!isConfigured()){setSyncStatus('offline');return;}
+        if(!isConfigured()){ setSyncStatus('offline'); return; }
         setSyncStatus('pending');
         clearTimeout(_timer);
-        _timer=setTimeout(()=>push(),900);
+        _timer = setTimeout(()=>push(), 900);
     }
 
-    // ── 攔截 localStorage.setItem，自動觸發同步 ──
-    const _origSet=localStorage.setItem.bind(localStorage);
-    const _TRACKED_SET=new Set(TRACKED);
-    function _raw(k,v){_origSet(k,v);}  // 內部寫入，不觸發同步
-    localStorage.setItem=function(key,value){
+    // ── 攔截 localStorage.setItem → 自動同步 ──
+    const _TRACKED_SET = new Set(TRACKED);
+    localStorage.setItem = function(key,value){
         _origSet(key,value);
         if(_TRACKED_SET.has(key)) schedulePush();
     };
 
     // ── 公開 API ──
-    window.NexusGist={
-        pull, push, createGist, schedulePush, isConfigured, getCfg, setSyncStatus,
-        // UI handlers
-        openSetup: function(){
-            const {token,gistId}=getCfg();
-            const ti=document.getElementById('gist-token-input');
-            const gi=document.getElementById('gist-id-input');
-            if(ti) ti.value=token?'（已儲存，如需更換請重新貼上）':'';
-            if(gi) gi.value=gistId||'';
-            // 顯示目前狀態
-            const sd=document.getElementById('gist-setup-status-detail');
-            if(sd){
-                if(isConfigured()){
-                    sd.style.display='block';
-                    sd.innerHTML=`<span style="color:var(--g5)">✅ 雲端已連線</span><br>Gist ID：<span style="color:var(--g2);font-family:monospace">${gistId}</span><br>下次開啟網頁將自動拉取最新資料。`;
-                }else{sd.style.display='none';}
-            }
-            window.openModal('gist-setup-modal');
-        },
-        saveConfig: async function(){
-            const msgEl=document.getElementById('gist-setup-msg');
-            let token=document.getElementById('gist-token-input').value.trim();
-            let gistId=document.getElementById('gist-id-input').value.trim();
-            // 如果 token 顯示的是已儲存提示，使用舊 token
-            if(token.startsWith('（已儲存')) token=getCfg().token;
-            if(!token){msgEl.className='sys-msg msg-error';msgEl.innerText='請輸入 Token';return;}
-            msgEl.className='sys-msg';msgEl.innerText='⏳ 驗證 Token...';
-            // 驗證 token
-            try{
-                const chk=await fetch('https://api.github.com/user',{headers:{'Authorization':`token ${token}`}});
-                if(!chk.ok){msgEl.className='sys-msg msg-error';msgEl.innerText='❌ Token 無效或權限不足';return;}
-                const usr=await chk.json();
-                msgEl.innerText=`✅ 驗證成功！GitHub: @${usr.login}　正在${gistId?'連線':'建立'} Gist...`;
-                if(!gistId){
-                    gistId=await createGist(token);
-                }
-                localStorage.setItem('nexusGistToken',token);
-                localStorage.setItem('nexusGistId',gistId);
-                msgEl.className='sys-msg msg-success';
-                msgEl.innerText=`☁ 連線成功！Gist ID: ${gistId}`;
-                document.getElementById('gist-id-input').value=gistId;
-                const sd=document.getElementById('gist-setup-status-detail');
-                if(sd){sd.style.display='block';sd.innerHTML=`<span style="color:var(--g5)">✅ 雲端已連線</span><br>Gist ID：<span style="color:var(--g2);font-family:monospace">${gistId}</span><br>GitHub 使用者：<span style="color:var(--g4)">@${usr.login}</span>`;}
-                // 立即推送現有資料
-                await push();
-                setSyncStatus('synced');
-            }catch(e){msgEl.className='sys-msg msg-error';msgEl.innerText='❌ 錯誤：'+e.message;}
-        },
-        disconnect: function(){
-            if(!confirm('確定斷開雲端連線？\n（本機資料保留，但不再同步）'))return;
-            localStorage.removeItem('nexusGistToken');
-            localStorage.removeItem('nexusGistId');
-            setSyncStatus('offline');
-            const msgEl=document.getElementById('gist-setup-msg');
-            if(msgEl){msgEl.className='sys-msg';msgEl.innerText='已斷開，本機模式運行中。';}
-            const sd=document.getElementById('gist-setup-status-detail');
-            if(sd)sd.style.display='none';
-        }
-    };
+    window.NexusGist = { pull, push, schedulePush, isConfigured, setSyncStatus };
 
-    // ── 全域快捷綁定 ──
-    window.openGistSetup   = ()=>window.NexusGist.openSetup();
-    window.saveGistConfig  = ()=>window.NexusGist.saveConfig();
-    window.disconnectGist  = ()=>window.NexusGist.disconnect();
+    // ── 頁面啟動流程 ──
+    let _resolveReady;
+    window.NexusGist.ready = new Promise(r=>{ _resolveReady=r; });
 
-    // ── 頁面啟動：先從 Gist 拉取最新資料 ──
-    document.addEventListener('DOMContentLoaded',async()=>{
-        if(isConfigured()){
-            const ov=document.getElementById('gist-loading-overlay');
-            const dt=document.getElementById('gist-loading-detail');
-            if(ov){ov.style.display='flex';}
-            if(dt)dt.innerText='從 GitHub Gist 拉取最新資料...';
-            await pull();
-            if(ov){ov.style.display='none';}
-        }else{
+    document.addEventListener('DOMContentLoaded', async ()=>{
+        const ov = document.getElementById('gist-loading-overlay');
+        const dt = document.getElementById('gist-loading-detail');
+
+        if(!isTokenSet()){
             setSyncStatus('offline');
+            console.warn('[NexusGist] NEXUS_GIST_TOKEN 未設定，以本機模式運行');
+            _resolveReady(); return;
         }
+
+        if(!_runtimeGistId){
+            if(ov){ ov.style.display='flex'; if(dt)dt.innerText='首次執行，正在建立雲端 Gist...'; }
+            await autoCreateGist();
+            if(ov) ov.style.display='none';
+            _resolveReady(); return;
+        }
+
+        if(ov){ ov.style.display='flex'; if(dt)dt.innerText='從 GitHub Gist 拉取最新資料...'; }
+        await pull();
+        if(ov) ov.style.display='none';
+        _resolveReady();
+
     },{once:true});
+
 })();
 
 // ============================================================
@@ -1121,11 +1083,8 @@ window.getSections = function() {
 };
 
 document.addEventListener('DOMContentLoaded', async ()=>{
-    // 等待 GistSync pull 完成（已在 GistSync 模組中以 once:true 掛載）
-    // 此處額外延遲確保 pull 先執行完畢
-    if(window.NexusGist&&window.NexusGist.isConfigured()){
-        await new Promise(r=>setTimeout(r,1800));
-    }
+    // 等待 GistSync pull/init 完成後再渲染 UI
+    if(window.NexusGist?.ready) await window.NexusGist.ready;
     window.renderLayout();window.initSystem();window.initUIEvents();
 });
 
