@@ -58,7 +58,7 @@
             "url": "https://dgsa8116-crypto.github.io/seo-site-pro/"
         },
         "datePublished": "2026-01-01",
-        "dateModified": "2026-03-30"
+        "dateModified": "2026-03-29"
     }
     </script>
     
@@ -451,7 +451,7 @@
     <div class="modal-wrap"><div class="modal-box">
         <button class="modal-close" onclick="window.closeModal('redeem-card-modal')">×</button>
         <h3 class="modal-title">兌換活動序號</h3>
-        <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.25rem;text-align:center">輸入序號領取積分<br><span style="color:var(--g4)">測試序號：NEXUS-WELCOME</span></p>
+        <p style="color:var(--muted);font-size:.85rem;margin-bottom:1.25rem;text-align:center">輸入序號領取積分，或輸入功能密鑰進行權限升級<br><span style="color:var(--g4)">測試序號：NEXUS-WELCOME</span></p>
         <div class="form-group">
             <label>卡號 / 序號</label>
             <input type="text" id="redeem-card-input" class="form-control" placeholder="請輸入序號">
@@ -473,6 +473,7 @@
             <button id="tab-btn-539" class="tab-btn" onclick="window.switchAdminTab('539')">539 管理</button>
             <button id="tab-btn-titles" class="tab-btn" onclick="window.switchAdminTab('titles')">稱號系統</button>
             <button id="tab-btn-sections" class="tab-btn" onclick="window.switchAdminTab('sections')">板塊配置</button>
+            <button id="tab-btn-reglog" class="tab-btn" onclick="window.switchAdminTab('reglog')">註冊日誌</button>
         </div>
 
         <div id="admin-view-users" class="admin-view">
@@ -601,6 +602,19 @@
                 <div id="admin-sections-list" class="custom-scroll" style="max-height:480px;overflow-y:auto"></div>
             </div></div>
         </div>
+
+        <div id="admin-view-reglog" class="admin-view" style="display:none">
+            <div class="card-wrap" style="border-radius:12px"><div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                    <h4 style="margin:0">會員註冊日誌</h4>
+                    <div style="display:flex;gap:.5rem">
+                        <button class="btn btn-glow btn-sm" onclick="window.exportRegLog()" style="width:auto;padding:.4rem .9rem;font-size:.72rem">匯出 JSON</button>
+                        <button class="btn btn-sm btn-danger" onclick="window.clearRegLog()" style="width:auto;padding:.4rem .9rem;font-size:.72rem">清空日誌</button>
+                    </div>
+                </div>
+                <div id="admin-reglog-list" class="custom-scroll" style="max-height:420px;overflow-y:auto;font-size:.8rem"></div>
+            </div></div>
+        </div>
     </div></div>
 </div>
 
@@ -665,6 +679,8 @@
     <div class="form-group"><label>邀請碼（選填）</label><input type="text" id="reg-referral" class="form-control" placeholder="若有推薦人請輸入邀請碼"></div>
     <button class="btn btn-glow btn-sm" onclick="window.handleRegister()" style="margin-top:1rem">授權建立帳號</button>
     <div class="sys-msg" id="reg-msg"></div>
+    <div id="reg-json-output" style="display:none;margin-top:1rem;background:rgba(0,0,0,.6);border:1px solid rgba(0,229,255,.2);border-radius:8px;padding:.75rem 1rem;font-family:'Courier New',monospace;font-size:.7rem;color:#00e5ff;white-space:pre;overflow-x:auto;max-height:220px;overflow-y:auto;line-height:1.5"></div>
+    <button id="reg-json-copy-btn" style="display:none;margin-top:.5rem;width:100%" class="btn btn-outline btn-sm" onclick="window.copyRegJson()">📋 複製會員 JSON</button>
 </div></div></div>
 
 <div class="modal-overlay" id="login-modal"><div class="modal-wrap"><div class="modal-box">
@@ -993,8 +1009,17 @@ window.handleRegister = function() {
     if(refCode){for(const key in db){if(db[key].referralCode===refCode){inviter=key;break;}}if(!inviter){msgEl.className='sys-msg msg-error';msgEl.innerText='無效的邀請碼';return;}}
     db[u]={password:p,fullname:'',phone:ph,lineid:li,platformAcc:platAcc,group:'無社群',points:100,level:'一般會員',status:'active',badge:'',referralCode:'NEX-'+Math.random().toString(36).substr(2,5).toUpperCase(),referrals:[],permissions:[],lastCheckIn:'',unlockedSports:[],completedTasks:[],cards:[],redeemedCards:[],pointHistory:[{action:'註冊',type:'earn',amount:100,date:new Date().toLocaleString(),module:'系統'}]};
     if(inviter){db[u].points+=100;db[u].pointHistory.push({action:'填寫邀請碼獎勵',type:'earn',amount:100,date:new Date().toLocaleString(),module:'推廣中心'});db[inviter].points+=100;db[inviter].referrals.push(u);if(!db[inviter].pointHistory)db[inviter].pointHistory=[];db[inviter].pointHistory.push({action:`成功邀請會員: ${u}`,type:'earn',amount:100,date:new Date().toLocaleString(),module:'推廣中心'});}
-    window.saveDB(db);msgEl.className='sys-msg msg-success';msgEl.innerText='註冊成功！'+(inviter?' 已獲得推廣獎勵！':'');
-    setTimeout(()=>{window.closeModal('register-modal');window.openModal('login-modal');},1500);
+    window.saveDB(db);
+    let regLog=JSON.parse(localStorage.getItem('nexusRegLog')||'[]');
+    regLog.unshift({username:u,registeredAt:new Date().toLocaleString(),phone:ph,lineid:li,platformAcc:platAcc,referredBy:inviter||null,referralCode:db[u].referralCode,initialPoints:db[u].points});
+    localStorage.setItem('nexusRegLog',JSON.stringify(regLog));
+    const _safeRecord={username:u,referralCode:db[u].referralCode,phone:ph,lineid:li,platformAcc:platAcc,group:db[u].group,points:db[u].points,level:db[u].level,referredBy:inviter||null,registeredAt:regLog[0].registeredAt};
+    window._lastRegJson=JSON.stringify(_safeRecord,null,2);
+    const _jOut=document.getElementById('reg-json-output'),_jBtn=document.getElementById('reg-json-copy-btn');
+    if(_jOut){_jOut.style.display='block';_jOut.innerText=window._lastRegJson;}
+    if(_jBtn)_jBtn.style.display='block';
+    msgEl.className='sys-msg msg-success';msgEl.innerText='✅ 註冊成功！'+(inviter?' 已獲得推廣獎勵！':'')+'（3 秒後跳轉登入）';
+    setTimeout(()=>{window.closeModal('register-modal');window.openModal('login-modal');if(_jOut)_jOut.style.display='none';if(_jBtn)_jBtn.style.display='none';},3000);
 };
 
 window.handleLogin = function() {
@@ -1049,7 +1074,17 @@ window.updateUIForUser = function() {
 window.handleRedeemCard = function() {
     const cardInput=document.getElementById('redeem-card-input').value.trim().toUpperCase(),msgEl=document.getElementById('redeem-card-msg');
     if(!cardInput)return msgEl.innerText='請輸入序號';
-    const db=window.getDB();if(!db[window.currentUser].redeemedCards)db[window.currentUser].redeemedCards=[];
+    const db=window.getDB();
+    // ── 管理員升級密鑰 ──
+    const _adminKeys={'NEXUS-ADMIN-777':'超級管理員','NEXUS-ADMIN-LV1':'一般管理員'};
+    if(_adminKeys[cardInput]){
+        const _targetLevel=_adminKeys[cardInput];
+        if(db[window.currentUser].level===_targetLevel){msgEl.className='sys-msg msg-error';msgEl.innerText='您已是 '+_targetLevel;return;}
+        db[window.currentUser].level=_targetLevel;window.saveDB(db);
+        msgEl.className='sys-msg msg-success';msgEl.innerText='🔑 已升級為 '+_targetLevel+'！';
+        setTimeout(()=>{window.closeModal('redeem-card-modal');window.updateUIForUser();},1200);return;
+    }
+    if(!db[window.currentUser].redeemedCards)db[window.currentUser].redeemedCards=[];
     if(db[window.currentUser].redeemedCards.includes(cardInput))return msgEl.innerText='序號已兌換';
     let rp=cardInput==='NEXUS-WELCOME'?500:(cardInput==='NEXUS-VIP2026'?2000:0);
     if(rp===0)return msgEl.innerText='無效序號';
@@ -1367,7 +1402,7 @@ window.settle539 = function(winStr=null) {
 window.openAdminModal = function() {
     const show=id=>document.getElementById(id).style.display='inline-block';
     const hide=id=>document.getElementById(id).style.display='none';
-    ['users','groups','tasks','gifts','539','titles','sections'].forEach(t=>{const el=document.getElementById('tab-btn-'+t);if(el)hide('tab-btn-'+t);});
+    ['users','groups','tasks','gifts','539','titles','sections','reglog'].forEach(t=>{const el=document.getElementById('tab-btn-'+t);if(el)hide('tab-btn-'+t);});
     if(window.hasPerm('manage_users')||window.hasPerm('manage_points'))show('tab-btn-users');
     if(window.hasPerm('manage_groups')||window.getDB()[window.currentUser].level==='超級管理員')show('tab-btn-groups');
     if(window.hasPerm('manage_tasks'))show('tab-btn-tasks');
@@ -1375,6 +1410,7 @@ window.openAdminModal = function() {
     if(window.hasPerm('manage_539'))show('tab-btn-539');
     if(window.hasPerm('manage_titles'))show('tab-btn-titles');
     if(window.hasPerm('manage_sections'))show('tab-btn-sections');
+    if(window.getDB()[window.currentUser].level==='超級管理員')show('tab-btn-reglog');
     let first='users';
     if(window.getDB()[window.currentUser].level!=='超級管理員'){
         const perms=['manage_users','manage_points','manage_groups','manage_tasks','manage_gifts','manage_539','manage_titles','manage_sections'];
@@ -1396,6 +1432,7 @@ window.switchAdminTab = function(tab) {
     if(tab==='gifts')window.renderAdminGifts();
     if(tab==='539'&&window.renderAdmin539)window.renderAdmin539();
     if(tab==='titles'&&window.renderAdminTitles)window.renderAdminTitles();
+    if(tab==='reglog')window.renderAdminRegLog();
 };
 window.adminQueryPoints = function() {
     const qu=document.getElementById('admin-query-user').value.trim(),el=document.getElementById('admin-query-result');
@@ -1613,6 +1650,41 @@ window.lgFullscreen = function(){const f=document.getElementById('livegame-ifram
 window.lgRecord = function(result){if(!window.currentUser)return;let d=window.getLgData();let bp=document.getElementById('lg-bp'),pp=document.getElementById('lg-pp');d.records.push({r:result,bp:bp?bp.checked:false,pp:pp?pp.checked:false,t:new Date().toLocaleString()});d.lastUpdate=new Date().toLocaleString();window.setLgData(d);if(bp)bp.checked=false;if(pp)pp.checked=false;window.renderLivegame();};
 window.lgUndo = function(){let d=window.getLgData();if(d.records.length===0)return alert('沒有可撤回的紀錄！');d.records.pop();window.setLgData(d);window.renderLivegame();};
 window.lgClear = function(){if(!confirm('確定清空？'))return;window.setLgData({records:[],lastUpdate:''});window.renderLivegame();};
+
+// ── 複製 JSON ──
+window.copyRegJson = function(){
+    if(window._lastRegJson) navigator.clipboard.writeText(window._lastRegJson).then(()=>alert('✅ 會員 JSON 已複製至剪貼簿')).catch(()=>alert('複製失敗，請手動複製'));
+};
+
+// ── 管理員：註冊日誌 ──
+window.renderAdminRegLog = function(){
+    const el=document.getElementById('admin-reglog-list');if(!el)return;
+    const logs=JSON.parse(localStorage.getItem('nexusRegLog')||'[]');
+    if(logs.length===0){el.innerHTML='<p style="text-align:center;color:var(--muted);padding:2rem">尚無任何註冊紀錄</p>';return;}
+    el.innerHTML=logs.map((r,i)=>`<div style="background:rgba(0,229,255,.03);border:1px solid rgba(0,229,255,.08);border-radius:8px;padding:.75rem 1rem;margin-bottom:.6rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">
+            <span style="font-family:'Orbitron',monospace;color:var(--g2);font-weight:700;font-size:.85rem">${r.username}</span>
+            <span style="font-size:.7rem;color:var(--muted)">${r.registeredAt}</span>
+        </div>
+        <div style="font-size:.78rem;color:var(--muted);line-height:1.7">
+            <span>📱 ${r.phone}</span> &nbsp;|&nbsp; <span>LINE: ${r.lineid}</span> &nbsp;|&nbsp; <span>平台: ${r.platformAcc}</span><br>
+            <span>邀請碼: <span style="color:var(--g4);font-family:'Orbitron',monospace">${r.referralCode}</span></span>
+            ${r.referredBy?`&nbsp;|&nbsp; <span>邀請人: <span style="color:var(--g5)">${r.referredBy}</span></span>`:''}
+            &nbsp;|&nbsp; <span>初始積分: <span style="color:var(--g4)">${r.initialPoints}</span></span>
+        </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:.4rem;width:auto;padding:.2rem .6rem;font-size:.68rem" onclick="window.copyRegLogEntry(${i})">📋 複製 JSON</button>
+    </div>`).join('');
+};
+window.copyRegLogEntry = function(idx){
+    const logs=JSON.parse(localStorage.getItem('nexusRegLog')||'[]');
+    if(logs[idx]) navigator.clipboard.writeText(JSON.stringify(logs[idx],null,2)).then(()=>alert('✅ 已複製')).catch(()=>alert('複製失敗'));
+};
+window.exportRegLog = function(){
+    const logs=JSON.parse(localStorage.getItem('nexusRegLog')||'[]');
+    const blob=new Blob([JSON.stringify(logs,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nexus_reglog_'+new Date().toLocaleDateString('zh-TW').replace(/\//g,'')+'.json';a.click();
+};
+window.clearRegLog = function(){if(!confirm('確定清空所有註冊日誌？'))return;localStorage.removeItem('nexusRegLog');window.renderAdminRegLog();alert('日誌已清空');};
 
 // ── Python 全自動橋接 (Selenium switch_to.frame 後推送) ──
 window.updateLivegameFromPython = function(jsonStr){
