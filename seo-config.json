@@ -1,0 +1,72 @@
+{
+    "site": {
+        "name": "NexusCloud",
+        "url": "https://dgsa8116-crypto.github.io/seo-site-pro/",
+        "language": "zh-TW",
+        "defaultTitle": "NexusCloud | 高級流光管理系統 - 企業級雲端運算平台"
+    },
+    "seo": {
+        "primaryKeywords": [
+            "NexusCloud",
+            "雲端管理系統",
+            "企業級平台",
+            "賽事預測",
+            "數據分析",
+            "AI預測系統"
+        ],
+        "secondaryKeywords": [
+            "會員管理系統",
+            "積分系統",
+            "流光引擎",
+            "雲端運算平台",
+            "即時數據分析",
+            "運動賽事預測"
+        ],
+        "longTailKeywords": [
+            "企業級雲端管理平台推薦",
+            "最佳賽事預測系統",
+            "AI數據分析平台",
+            "高效能雲端運算解決方案",
+            "免費會員積分系統"
+        ],
+        "seasonalKeywords": {
+            "spring": ["春季活動", "新年優惠", "春季賽事"],
+            "summer": ["夏季聯賽", "暑期活動", "世界盃"],
+            "autumn": ["秋季賽事", "職棒季後賽", "NBA開季"],
+            "winter": ["冬季活動", "年終優惠", "跨年活動"]
+        }
+    },
+    "pages": {
+        "home": {
+            "title": "首頁 - NexusCloud 高級流光管理系統",
+            "description": "體驗次世代的企業級雲端運算平台，高效整合您的業務數據。",
+            "keywords": ["NexusCloud首頁", "雲端平台", "企業解決方案"]
+        },
+        "sports": {
+            "title": "賽事預測 - AI精準分析",
+            "description": "頂尖AI模型與專業球評提供的精準賽事分析預測。",
+            "keywords": ["賽事預測", "AI分析", "運動預測", "NBA預測", "MLB預測"]
+        },
+        "livegame": {
+            "title": "真人遊戲 - 即時走勢分析",
+            "description": "進入房間後系統自動攔截走勢，即時分析預測。",
+            "keywords": ["真人遊戲", "走勢分析", "即時預測"]
+        },
+        "analytics": {
+            "title": "數據分析 - 即時監控面板",
+            "description": "企業級即時數據分析面板，全方位監控系統效能。",
+            "keywords": ["數據分析", "監控面板", "企業分析"]
+        }
+    },
+    "socialMedia": {
+        "ogImage": "og-image.png",
+        "twitterCard": "summary_large_image"
+    },
+    "autoUpdate": {
+        "enabled": true,
+        "frequency": "daily",
+        "updateSitemap": true,
+        "updateKeywords": true,
+        "notifySearchEngines": true
+    }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#070810"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="text" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff2d6b"/>
+      <stop offset="25%" style="stop-color:#00e5ff"/>
+      <stop offset="50%" style="stop-color:#7c3aed"/>
+      <stop offset="75%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#ff2d6b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="600" y="280" text-anchor="middle" font-family="Arial Black" font-size="72" fill="url(#text)">NEXUSCLOUD</text>
+  <text x="600" y="380" text-anchor="middle" font-family="Arial" font-size="36" fill="#e8eaf6">高級流光管理系統</text>
+  <text x="600" y="450" text-anchor="middle" font-family="Arial" font-size="24" fill="#6b7280">企業級雲端運算平台</text>
+</svg>

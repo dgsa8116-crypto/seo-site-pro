@@ -1,0 +1,81 @@
+name: Auto Update SEO
+
+on:
+  schedule:
+    # 每天台北時間早上 8 點自動執行 (UTC 0:00)
+    - cron: '0 0 * * *'
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 允許手動觸發
+
+jobs:
+  update-seo:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Update SEO metadata
+      run: |
+        # 更新 sitemap.xml 的 lastmod 日期
+        TODAY=$(date +%Y-%m-%d)
+        sed -i "s/<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}<\/lastmod>/<lastmod>$TODAY<\/lastmod>/g" sitemap.xml
+        
+        # 更新 index.html 的 dateModified
+        sed -i "s/\"dateModified\": \"[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\"/\"dateModified\": \"$TODAY\"/g" index.html
+        
+        echo "✅ SEO metadata updated to $TODAY"
+        
+    - name: Generate dynamic keywords
+      run: |
+        # 根據日期生成動態 SEO 關鍵詞
+        MONTH=$(date +%m)
+        YEAR=$(date +%Y)
+        
+        # 季節性關鍵詞
+        case $MONTH in
+          01|02|03) SEASON="春季" ;;
+          04|05|06) SEASON="夏季" ;;
+          07|08|09) SEASON="秋季" ;;
+          10|11|12) SEASON="冬季" ;;
+        esac
+        
+        echo "📊 Current season: $SEASON $YEAR"
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action Bot"
+        git add -A
+        git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 Auto-update SEO: $(date +%Y-%m-%d)" && git push)
+        
+  deploy:
+    needs: update-seo
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: '.'
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

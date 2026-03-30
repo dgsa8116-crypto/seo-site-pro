@@ -1,0 +1,19 @@
+lsi: false
+safe: true
+source: .
+incremental: false
+highlighter: rouge
+gist:
+  noscript: false
+kramdown:
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+# 排除不需要的檔案
+exclude:
+  - .github
+  - README.md
+  - LICENSE
+  - seo-config.json
+  - "*.py"
+  - pages/*.py
