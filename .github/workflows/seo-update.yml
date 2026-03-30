@@ -11,7 +11,9 @@ on:
 jobs:
   update-seo:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -20,6 +22,19 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4
+
+    - name: Run Python scraper
+      run: python pages/scraper.py
         
     - name: Update SEO metadata
       run: |
@@ -53,7 +68,7 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action Bot"
         git add -A
-        git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 Auto-update SEO: $(date +%Y-%m-%d)" && git push)
+        git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 Auto-update SEO & Data: $(date +%Y-%m-%d)" && git push)
         
   deploy:
     needs: update-seo
